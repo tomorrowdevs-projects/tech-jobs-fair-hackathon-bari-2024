@@ -10,11 +10,13 @@ WsServer.Start(ws =>
     ws.OnOpen = () =>
     {
         WebSocketHandler.WsConnections.Add(ws);
+        Console.WriteLine("Connected client " + ws.ConnectionInfo.ClientIpAddress + ":" + ws.ConnectionInfo.ClientPort);
     };
     ws.OnMessage = message =>
     {
         try
         {
+            Console.WriteLine("Received messsage: " + message.ToString());
             WsRequest? msg = JsonConvert.DeserializeObject<WsRequest>(message);
             WebSocketHandler.ProcessMessageReceived(msg);
         }
@@ -31,8 +33,6 @@ WsServer.Start(ws =>
     };
 });
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
@@ -44,9 +44,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
+app.UseSwagger();
+app.UseSwaggerUI();
+app.UseDeveloperExceptionPage();
 //}
 app.UseHttpsRedirection();
 app.UseAuthorization();
