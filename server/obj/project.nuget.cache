@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "y1Z5faJXasZjrqgq6BOVJsiRFryC3lGJqiaiBBJjB5ujbkILWdYr0/qves3brriZgV0cD5aYPSrxkPzC016YrQ==",
+  "dgSpecHash": "a+EQXTqESpBwgO7fghfumZhvjgvC3ckMFm88yyqfR5mT8H1YAMNUxxe+ETGpqA8xQZBV1nHaZTrwbEhMi3YvlQ==",
   "success": true,
   "projectFilePath": "/Users/michele/Works/02_TJF_Challenge/server/server.csproj",
   "expectedPackageFiles": [
+    "/Users/michele/.nuget/packages/fleck/1.2.0/fleck.1.2.0.nupkg.sha512",
     "/Users/michele/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/michele/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/michele/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/michele/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",
     "/Users/michele/.nuget/packages/swashbuckle.aspnetcore.swagger/6.4.0/swashbuckle.aspnetcore.swagger.6.4.0.nupkg.sha512",
     "/Users/michele/.nuget/packages/swashbuckle.aspnetcore.swaggergen/6.4.0/swashbuckle.aspnetcore.swaggergen.6.4.0.nupkg.sha512",

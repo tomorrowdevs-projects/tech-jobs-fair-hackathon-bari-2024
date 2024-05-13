@@ -1,5 +1,39 @@
-var builder = WebApplication.CreateBuilder(args);
+using Fleck;
+using Newtonsoft.Json;
+using server.Dtos;
+using server.Handlers;
 
+// Inizializzo un websocket
+var WsServer = new WebSocketServer("ws://0.0.0.0:1402");
+WsServer.Start(ws =>
+{
+    ws.OnOpen = () =>
+    {
+        WebSocketHandler.WsConnections.Add(ws);
+    };
+    ws.OnMessage = message =>
+    {
+        try
+        {
+            WsRequest? msg = JsonConvert.DeserializeObject<WsRequest>(message);
+            WebSocketHandler.ProcessMessageReceived(msg);
+        }
+        catch (Exception ex)
+        {
+            // inviare al client: non sono riuscito a decodificare il messaggio
+            Console.WriteLine(ex.Message);
+        }
+    };
+    ws.OnError = error =>
+    {
+        // salvo nei logs
+        Console.WriteLine(error);
+    };
+});
+
+
+
+var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -10,11 +44,12 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+    app.UseDeveloperExceptionPage();
+//}
 
 app.UseHttpsRedirection();
 
