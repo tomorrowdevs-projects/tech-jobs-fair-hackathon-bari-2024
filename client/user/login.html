@@ -10,7 +10,7 @@
 
     <div class="grid">
   
-      <form action="https://httpbin.org/post" method="POST" class="form login">
+      <div class="form login">
   
         <div class="form__field">
           <label for="login__username"><svg class="icon">
@@ -20,21 +20,39 @@
         </div>
   
         <div class="form__field">
-          <label for="login__password"><svg class="icon">
-              <use xlink:href="#icon-lock"></use>
-            </svg><span class="hidden">Password</span></label>
-          <input id="login__password" type="password" name="password" class="form__input" placeholder="Password" required>
+          <input type="submit"  value="Avvia partita" id="submit">
         </div>
   
-        <div class="form__field">
-          <input type="submit" value="Sign In">
+      </div>
+      </div>
+      <div class="isOnline">
+        <div class="form login">
+            <div class="form__field">
+                <label for="login__username"><div class="circle-icon">
+                    <svg class="circle">
+                      <use xlink:href="#icon-user"></use>
+                    </svg>
+                  </div>
+              </div>
+              <div class="form__field">
+                <label for="login__username"><div class="circle-icon">
+                    <svg class="circle">
+                      <use xlink:href="#icon-user"></use>
+                    </svg>
+                  </div>
+              </div>
+              <div class="form__field">
+                <label for="login__username"><div class="circle-icon">
+                    <svg class="circle">
+                      <use xlink:href="#icon-user"></use>
+                    </svg>
+                  </div>
+              </div>
+              
         </div>
-  
-      </form>
-  
-      <p class="text--center">Not a member? <a href="./register.html">Sign up now</a> <svg class="icon">
-          <use xlink:href="#icon-arrow-right"></use>
-        </svg></p>
+      </div>
+
+     
   
     </div>
   
@@ -51,4 +69,22 @@
     </svg>
   
   </body>
+  <script>
+    const user = localStorage.getItem('user');
+    if(user != '' && user){
+        document.getElementById('login__username').value = user;
+    }
+    
+    document.querySelector('#submit').addEventListener('click' , (e) =>{
+        e.preventDefault()
+        let value = document.getElementById('login__username').value;
+        if(value == '') return alert('Username is required !')
+        localStorage.setItem('user', value);
+        // loginInputBackgroundColor: #3b4148; remove
+        //  background-color: var(--loginInputBackgroundColor);
+        // background-color: var();
+    })
+   
+    
+  </script>
 </html>
