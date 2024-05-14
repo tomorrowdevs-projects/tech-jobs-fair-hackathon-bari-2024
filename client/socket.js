@@ -28,7 +28,7 @@ function message(msg){
 
 
 const SOCKET_URL = "ws://lignux.net:1402";
-const DEBUG_SOCKET = "ws://localhost:3000";
+const DEBUG_SOCKET = "ws://lignux.net:3000";
 
 window.addEventListener("DOMContentLoaded", () => {
 
