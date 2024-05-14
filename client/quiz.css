@@ -1,25 +1,81 @@
-:root{
-    --loginInputBackgroundColor: #3b4148;
+:root {
+  --loginInputBackgroundColor: #3b4148;
+  --backgroundBody: rgb(18, 18, 18);
+  --textColor: rgb(182, 182, 182);
+  --hoverQuestColor:rgb(249, 254, 164);
 }
 
-.bxqst{
-    display: flex;
-    gap:20;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--backgroundBody);
+}
+.arg {
+  padding: 20px;
+  background: linear-gradient(45deg, rgba(40, 40, 40, 0.628)-100%, black 100%);
+  color: var(--textColor);
+}
+.questions {
+  padding: 20px;
+  transition: 0.8s;
+  transform: scale(1);
+}
+.quest {
+  font-family: "Courier New", Courier, monospace;
+  background: linear-gradient(45deg, #070057 0%, rgba(151, 0, 255, 0.16) 90%);
+  border-radius: 100px;
+  padding: 10px;
+  margin-top: 50px;
+  transition: 1s;
+  color: var(--textColor);
+  font-weight: 900;
+  font-size: 17px;
 }
 ol {
-    display: flex;
-    gap: 20;
+  margin: 10px 0 30px 50px;
 }
-.list{
-    background: #0000;
-    border: none;
-    color: rgb(182, 182, 182);
-    font-size: medium;
-    transition: 0.2s;
-    font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+.list {
+  background: #0000;
+  border: none;
+  color: var(--textColor);
+  font-size: medium;
+  transition: 0.2s;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
 }
-.list:hover{
-    cursor: pointer;
-  color: rgb(249, 254, 164);
+.list:hover {
+  cursor: pointer;
+  color: var(--hoverQuestColor);
   transform: scale(1.01);
 }
+
+#BT {
+  background: linear-gradient(
+    45deg,
+    rgba(71, 61, 139, 0.348) 0%,
+    #07005752 90%
+  );
+  color: var(--textColor);
+  filter: blur(1);
+  margin-left: 100px;
+  width: 90px;
+  height: 50px;
+  transition: 0.5s;
+  border-radius: 10px;
+  outline: none;
+  border: 1px solid #0020578a;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: medium;
+}
+#BT:hover{
+    cursor: pointer;
+}
+#BT:active{
+    border-radius: 20px;
+    color:rgba(0, 0, 0, 0.376);
+    font-size:small;
+  }
