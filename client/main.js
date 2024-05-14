@@ -1,17 +1,35 @@
 
-window.addEventListener("DOMContentLoaded",()=>{
+
+function setUserInLocalStorage() {
+
     const user = localStorage.getItem('user');
-    if(user != '' && user){
+    if (user != '' && user) {
         document.getElementById('login__username').value = user;
     }
-    
-    document.querySelector('#submit').addEventListener('click' , (e) =>{
+
+    document.querySelector('#submit').addEventListener('click', (e) => {
         e.preventDefault()
         let value = document.getElementById('login__username').value;
-        if(value == '') return alert('Username is required !')
+        if (value == '') return alert('Username is required !')
         localStorage.setItem('user', value);
-        // loginInputBackgroundColor: #3b4148; remove
-        //  background-color: var(--loginInputBackgroundColor);
-        // background-color: var();
-    })
+        document.querySelector(".grid").style.display = 'none';
+        
+        
+        let searching = document.body.appendChild = document.createElement("div");
+        searching.id = "searching";
+        searching.innerHTML = "<h1>CERCO UN AVVERSARIO .. </h1>";
+        document.querySelector(".align").append(searching);
+        
+    }
+
+    )
+}
+
+
+
+
+window.addEventListener("DOMContentLoaded", () => {
+
+    setUserInLocalStorage();
+
 })
