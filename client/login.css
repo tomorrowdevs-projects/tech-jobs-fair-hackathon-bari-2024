@@ -11,12 +11,14 @@
 /* helpers/align.css */
 
 .align {
-  display: grid;
-  place-items: center;
+  background-color: var(--bodyBackgroundColor);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .grid {
-  position: absolute;
+  /* position: absolute; */
   top: 10vh;
   /* inline-size: 90%; */
   /* margin-inline: auto; */
