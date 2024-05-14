@@ -1,7 +1,8 @@
 const SOCKET_URL = "ws://lignux.net:1402";
 const DEBUG_SOCKET = "ws://lignux.net:3000";
+const LOCAL_DEBUG_SOCKET = "ws://localhost:3000";
 
-const socket = new WebSocket(DEBUG_SOCKET);
+const socket = new WebSocket(LOCAL_DEBUG_SOCKET);
 
 
 function connection() {
@@ -23,7 +24,7 @@ function message(msg){
                 start.innerHTML = "comincia il quiz";
                 credenzial.id = parsed.id;
                 credenzial.gameId = parsed.gameId;
-                socket.send(JSON.stringify({id:parsed.id}))
+                socket.send(JSON.stringify({id:parsed.id,gameId:parsed.gameId,event:"prima_domanda"}))
             }
         default:
             break
