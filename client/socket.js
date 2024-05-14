@@ -1,4 +1,7 @@
+const SOCKET_URL = "ws://lignux.net:1402";
+const DEBUG_SOCKET = "ws://lignux.net:3000";
 
+const socket = new WebSocket(DEBUG_SOCKET);
 
 
 function connection() {
@@ -9,7 +12,7 @@ function connection() {
 function connectionError() {
     console.log("error")
 }
-
+const credenzial = {}
 function message(msg){
     const parsed = JSON.parse(msg.data);
     switch(parsed.event){
@@ -18,7 +21,9 @@ function message(msg){
                 document.getElementById("searching").style.display = "none";
                 let start = document.createElement("h1");
                 start.innerHTML = "comincia il quiz";
-                document.body.append(start);
+                credenzial.id = parsed.id;
+                credenzial.gameId = parsed.gameId;
+                socket.send(JSON.stringify({id:parsed.id}))
             }
         default:
             break
@@ -27,12 +32,11 @@ function message(msg){
 
 
 
-const SOCKET_URL = "ws://lignux.net:1402";
-const DEBUG_SOCKET = "ws://lignux.net:3000";
+
 
 window.addEventListener("DOMContentLoaded", () => {
 
-    const socket = new WebSocket(DEBUG_SOCKET);
+  
 
     document.querySelector('#submit').addEventListener('click', (e) => {
         e.preventDefault()
