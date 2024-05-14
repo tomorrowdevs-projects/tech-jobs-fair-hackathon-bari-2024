@@ -1,5 +1,6 @@
 
 
+
 function connection() {
     console.log("open");
 }
@@ -17,7 +18,6 @@ function message(msg){
                 document.getElementById("searching").style.display = "none";
                 let start = document.createElement("h1");
                 start.innerHTML = "comincia il quiz";
-
                 document.body.append(start);
             }
         default:
