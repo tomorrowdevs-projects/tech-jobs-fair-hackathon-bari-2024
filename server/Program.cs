@@ -26,6 +26,11 @@ WsServer.Start(ws =>
             Console.WriteLine(ex.Message);
         }
     };
+    ws.OnClose = () =>
+    {
+        WebSocketHandler.WsConnections.Remove(ws);
+        Console.WriteLine("Client disconnected " + ws.ConnectionInfo.ClientIpAddress + ":" + ws.ConnectionInfo.ClientPort);
+    };
     ws.OnError = error =>
     {
         // salvo nei logs

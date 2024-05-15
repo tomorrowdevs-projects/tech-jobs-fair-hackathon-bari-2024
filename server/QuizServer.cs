@@ -1,105 +1,121 @@
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Timers;
+using Newtonsoft.Json;
 using server.Models;
-using Timer1 = System.Timers.Timer;
+using Timer = System.Timers.Timer;
+using System.Diagnostics;
 
 namespace server.Services
 {
     public class QuizServer
     {
-        private List<Player> players = new List<Player>();
-        private Question currentQuestion;
-        private Timer questionTimer;
-        private bool gameInProgress = false;
-        private readonly WebSocketHandler _webSocketHandler;
-
-        private const int MAX_PLAYERS = 10;
+        private const int MAX_PLAYERS = 2;
         private const int QUESTION_TIMEOUT = 15000; // 15 seconds
         private const int NUM_QUESTIONS = 10;
 
-        public QuizServer(WebSocketHandler webSocketHandler)
-        {
-            _webSocketHandler = webSocketHandler;
-        }
+        private List<Player> Players = [];
+        private QuestionList? Questions = new();
+        private Question? CurrentQuestion;
+        private Timer questionTimer;
+        private Stopwatch ElapsingTimer;
+        private bool gameInProgress = false;
 
-        public async Task Join(string playerName, string connectionId)
+
+        public QuizServer()
+        { }
+
+        public async Task Join(Player player)
         {
-            if (gameInProgress || players.Count >= MAX_PLAYERS)
+            if (player == null) return;
+            if (gameInProgress || Players.Count >= MAX_PLAYERS)
             {
-                await _webSocketHandler.Send(new WsResponse { Message = "Wait" });
+                await player.WsConnection?.Send("Max number of player already joined!");
                 return;
             }
-
-            players.Add(new Player { ConnectionId = connectionId, Name = playerName });
-            await _webSocketHandler.Send(new WsResponse { Message = "Joined" });
+            Players.Add(player);
+            await player.WsConnection?.Send("Accepted to play!");
         }
 
         public async Task StartGame()
         {
             gameInProgress = true;
-            players.ForEach(p => p.Score = 0);
-            await _webSocketHandler.Send(new WsResponse { Message = "GameStart" });
-
-            await GetNextQuestion();
+            Players.ForEach(p => p.Score = 0);
+            Questions = await GetQuestions();
+            Players.ForEach(p => p.WsConnection?.Send("Game is starting!"));
+            await PickQuestion();
+            await AskQuestion();
         }
 
-        public async Task Answer(string connectionId, string answer)
+        private async Task<QuestionList?> GetQuestions()
         {
-            var player = players.FirstOrDefault(p => p.ConnectionId == connectionId);
-            if (player != null && !string.IsNullOrEmpty(answer) && currentQuestion != null)
+            using var client = new HttpClient();
+            var response = await client.GetStringAsync("https://opentdb.com/api.php?amount=" + NUM_QUESTIONS + "&type=multiple");
+            var Questions = JsonConvert.DeserializeObject<QuestionList>(response);
+            return Questions;
+        }
+
+        private async Task<Question?> PickQuestion()
+        {
+            // Create a Random object
+            Random random = new();
+            // Randomly select one item
+            int index = random.Next(Questions?.Questions?.Length ?? 0);
+            Question selectedItem = Questions?.Questions[index];
+            while (selectedItem.Asked == true)
             {
-                player.Answer = answer;
-                player.Time = DateTime.Now;
-                player.Score += (answer == currentQuestion.CorrectAnswer) ? 1 : 0;
+                index = random.Next(Questions?.Questions?.Length ?? 0);
+                selectedItem = Questions?.Questions[index];
             }
+            Questions.Questions[index].Asked = true;
+            return selectedItem;
         }
 
-        public void PlayerDisconnected(string connectionId)
+        public async Task AskQuestion()
         {
-            players.RemoveAll(p => p.ConnectionId == connectionId);
-        }
-
-        private async Task GetNextQuestion()
-        {
-            var question = await GetRandomQuestion();
-            currentQuestion = new Question
-            {
-                QuestionText = question["question"].ToString(),
-                CorrectAnswer = question["correct_answer"].ToString(),
-                AllAnswers = ((JArray)question["incorrect_answers"]).Select(a => a.ToString()).ToList()
-            };
-
-            await _webSocketHandler.Send(new WsResponse { Message = "NewQuestion", Data = currentQuestion.QuestionText });
-
+            // Scelgo la domanda
+            CurrentQuestion = await PickQuestion();
+            Players.ForEach(p => p.WsConnection?.Send(CurrentQuestion.QuestionText));
+            List<string> answers = new List<string> { CurrentQuestion?.CorrectAnswer ?? "" };
+            answers.AddRange(CurrentQuestion?.IncorrectAnswers);
+            Shuffle(answers);
+            Players.ForEach(p => p.WsConnection?.Send(JsonConvert.SerializeObject(answers)));
             questionTimer = new Timer(QUESTION_TIMEOUT);
             questionTimer.Elapsed += async (sender, e) => await EndQuestion();
             questionTimer.AutoReset = false;
             questionTimer.Start();
+            ElapsingTimer.Start();
         }
 
-        private async Task<JObject> GetRandomQuestion()
+        public async Task Answer(String playername, String answer)
         {
-            using (var client = new HttpClient())
+            var player = Players.FirstOrDefault(p => p.Name == playername);
+            if (player != null && !string.IsNullOrEmpty(answer) && CurrentQuestion != null)
             {
-                var response = await client.GetStringAsync("https://opentdb.com/api.php?amount=1&type=multiple");
-                return JObject.Parse(response)["results"][0] as JObject;
+                questionTimer.Stop();
+                ElapsingTimer.Stop();
+                player.Time += ElapsingTimer.Elapsed;
+                player.Score += (answer == CurrentQuestion.CorrectAnswer) ? 1 : 0;
             }
+            Thread.Sleep(3000);
+            await PickQuestion();
+            await AskQuestion();
         }
+
+        public void PlayerDisconnected(Fleck.IWebSocketConnection connection)
+        {
+            Players.RemoveAll(p => p.WsConnection == connection);
+            gameInProgress = false;
+        }
+
 
         private async Task EndQuestion()
         {
             questionTimer.Stop();
-            var results = players.Select(p => new { p.Name, Correct = p.Answer == currentQuestion.CorrectAnswer, Time = p.Time }).ToList();
-            await _webSocketHandler.Send(new WsResponse { Message = "QuestionEnd", Data = results });
-
-            if (players.Count >= 2)
+            ElapsingTimer.Stop();
+            Players.ForEach(p => p.Time += ElapsingTimer.Elapsed);
+            if (Players.Count >= 2)
             {
-                await GetNextQuestion();
+                Thread.Sleep(3000);
+                await PickQuestion();
+                await AskQuestion();
             }
             else
             {
@@ -110,8 +126,23 @@ namespace server.Services
         private async Task EndGame()
         {
             gameInProgress = false;
-            var finalResults = players.OrderByDescending(p => p.Score).ToList();
-            await _webSocketHandler.Send(new WsResponse { Message = "GameEnd", Data = finalResults });
+            var finalResults = Players.OrderByDescending(p => p.Score).ToList();
+            Players.ForEach(async p => await p.WsConnection?.Send(JsonConvert.SerializeObject(finalResults)));
+        }
+
+
+        static void Shuffle<T>(List<T> list)
+        {
+            Random random = new Random();
+            int n = list.Count;
+            for (int i = n - 1; i > 0; i--)
+            {
+                int j = random.Next(i + 1);
+                // Swap list[i] with the element at random index
+                T temp = list[i];
+                list[i] = list[j];
+                list[j] = temp;
+            }
         }
     }
 }
