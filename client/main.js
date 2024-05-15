@@ -1,6 +1,8 @@
-
+// import { qst } from "./quest";
 
 function setUserInLocalStorage() {
+
+   qst = ciao()
 
     const user = localStorage.getItem('user');
     if (user != '' && user) {
@@ -15,16 +17,12 @@ function setUserInLocalStorage() {
         document.querySelector(".grid").style.display = 'none';
         
         
-        let searching = document.body.appendChild = document.createElement("div");
+       /*  let searching = document.body.appendChild = document.createElement("div");
         searching.id = "searching";
         searching.innerHTML = "<h1>CERCO UN AVVERSARIO .. </h1>";
-        document.querySelector(".align").append(searching);
-        // for(let i = 0; i< 2; i++){
-        //     let wating = document.createElement('span')
-        //     wating.style = "font-size:small"
-        //     wating.className = "spinner-grow","text-dark";
-        //     searching.append(wating);
-        // }
+        document.querySelector(".align").append(searching); */
+        
+//    qst()
     }
 
     )
@@ -33,8 +31,3 @@ function setUserInLocalStorage() {
 
 
 
-window.addEventListener("DOMContentLoaded", () => {
-
-    setUserInLocalStorage();
-
-})
