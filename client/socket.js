@@ -21,12 +21,19 @@ function message(msg){
             if(parsed.status == "success"){
                 document.getElementById("searching").style.display = "none";
                 let start = document.createElement("h1");
+                
                 start.innerHTML = "comincia il quiz";
                 credenzial.id = parsed.id;
                 credenzial.gameId = parsed.gameId;
                 socket.send(JSON.stringify({id:parsed.id,gameId:parsed.gameId,event:"prima_domanda"}))
             }
+            break;
+
         default:
+            let wating = document.createElement('span').className.add("spinner-grow","text-dark");
+            wating.setAttribute('role', 'status');
+            wating.innerHTML = "Loading...";
+            
             break
     }
 }
