@@ -19,7 +19,12 @@ function setUserInLocalStorage() {
         searching.id = "searching";
         searching.innerHTML = "<h1>CERCO UN AVVERSARIO .. </h1>";
         document.querySelector(".align").append(searching);
-        
+        // for(let i = 0; i< 2; i++){
+        //     let wating = document.createElement('span')
+        //     wating.style = "font-size:small"
+        //     wating.className = "spinner-grow","text-dark";
+        //     searching.append(wating);
+        // }
     }
 
     )

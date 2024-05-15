@@ -4,73 +4,51 @@ const LOCAL_DEBUG_SOCKET = "ws://localhost:3000";
 
 const socket = new WebSocket(LOCAL_DEBUG_SOCKET);
 
-
 function connection() {
-    console.log("open");
+  console.log("open");
 }
-
 
 function connectionError() {
-    console.log("error")
+  console.log("error");
 }
-const credenzial = {}
-function message(msg){
-    const parsed = JSON.parse(msg.data);
-    switch(parsed.event){
-        case "nuova_partita":
-            if(parsed.status == "success"){
-                document.getElementById("searching").style.display = "none";
-                let start = document.createElement("h1");
-                
-                start.innerHTML = "comincia il quiz";
-                credenzial.id = parsed.id;
-                credenzial.gameId = parsed.gameId;
-                socket.send(JSON.stringify({id:parsed.id,gameId:parsed.gameId,event:"prima_domanda"}))
-            }
-            break;
+const credenzial = {};
+function message(msg) {
+  const parsed = JSON.parse(msg.data);
+  switch (parsed.event) {
+    case "nuova_partita":
+      if (parsed.status == "success") {
+        document.getElementById("searching").style.display = "none";
+        let start = document.createElement("h1");
 
-        default:
-            let wating = document.createElement('span').className.add("spinner-grow","text-dark");
-            wating.setAttribute('role', 'status');
-            wating.innerHTML = "Loading...";
-            
-            break
-    }
+        start.innerHTML = "comincia il quiz";
+        credenzial.id = parsed.id;
+        credenzial.gameId = parsed.gameId;
+        socket.send(
+          JSON.stringify({
+            id: parsed.id,
+            gameId: parsed.gameId,
+            event: "prima_domanda",
+          })
+        );
+      }
+      break;
+    default:
+      break;
+  }
 }
-
-
-
-
 
 window.addEventListener("DOMContentLoaded", () => {
+  document.querySelector("#submit").addEventListener("click", (e) => {
+    e.preventDefault();
+    let value = document.getElementById("login__username").value;
+    if (value == "") return;
 
-  
+    socket.send(JSON.stringify({ event: "nuova_partita", user: value }));
+  });
 
-    document.querySelector('#submit').addEventListener('click', (e) => {
-        e.preventDefault()
-        let value = document.getElementById('login__username').value;
-        if (value == '') return
-        
-        socket.send(JSON.stringify({event:"nuova_partita",user:value}));
+  socket.onopen = connection;
+  socket.onerror = connectionError;
 
-    });
-
-
-
-
-    socket.onopen = connection;
-    socket.onerror = connectionError;
-
-    // socket.onclose = onClose;
-    socket.onmessage = message;
-
-
+  // socket.onclose = onClose;
+  socket.onmessage = message;
 });
-
-
-
-
-
-
-
-
