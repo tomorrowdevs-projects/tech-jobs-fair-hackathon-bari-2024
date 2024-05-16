@@ -6,4 +6,11 @@ namespace server.Dtos
         public String Status { get; set; } = String.Empty;
         public DateTime Timestamp { get; set; } = DateTime.Now;
     }
+
+    public class WsQuestion
+    {
+        public String Event { get; set; } = String.Empty;
+        public String Status { get; set; } = String.Empty;
+        public DateTime Timestamp { get; set; } = DateTime.Now;
+    }
 }

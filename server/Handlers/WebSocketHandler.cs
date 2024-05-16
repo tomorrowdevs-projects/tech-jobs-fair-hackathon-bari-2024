@@ -23,7 +23,7 @@ namespace server.Handlers
             Players.Add(player);
             if (!Rooms.GameInProgress || Rooms.Players.Count <= MAX_PLAYERS)
             {
-                player?.WsConnection?.Send("Accepted to play!");
+                player?.WsConnection?.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Accepted to play!", Status = "success" }));
                 Rooms.Players.Add(player!);
                 if (Rooms.Players.Count == MAX_PLAYERS)
                 {
@@ -32,17 +32,18 @@ namespace server.Handlers
             }
             else
             {
-                player?.WsConnection?.Send("Max number of player already joined!");
+                player?.WsConnection?.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Max number of player already joined!", Status = "warning" }));
                 player?.WsConnection?.Close();
             }
         }
+
 
         private static async Task StartGame()
         {
             QuestionRepo = await GetQuestions();
             Rooms.GameInProgress = true;
             Players.ForEach(p => p.Score = 0);
-            Players.ForEach(p => p.WsConnection?.Send("Game is starting!"));
+            Players.ForEach(p => p.WsConnection?.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Game is starting!", Status = "success" })));
             PickQuestion();
             AskQuestion();
         }
@@ -57,14 +58,18 @@ namespace server.Handlers
 
         public static Question? PickQuestion()
         {
+            if (QuestionRepo?.Questions.Count <= 2)
+            {
+                GetQuestions().ConfigureAwait(true);
+                Thread.Sleep(1000);
+            }
             // Create a Random object
             Random random = new();
             // Randomly select one item
             int index = random.Next((QuestionRepo?.Questions?.Count - 1) ?? 0);
             QuestionSelected = QuestionRepo?.Questions[index];
             QuestionRepo!.Questions.RemoveAt(index);
-            if (QuestionRepo.Questions.Count <= 2)
-                GetQuestions().ConfigureAwait(false);
+
             return QuestionSelected;
         }
 
@@ -75,6 +80,7 @@ namespace server.Handlers
             Players.ForEach(p => p.WsConnection?.Send(QuestionSelected?.QuestionText));
             List<string> answers = [QuestionSelected?.CorrectAnswer ?? "", .. QuestionSelected?.IncorrectAnswers];
             Shuffle(answers);
+            Console.WriteLine(JsonConvert.SerializeObject(answers));
             Players.ForEach(p => p.WsConnection?.Send(JsonConvert.SerializeObject(answers)));
             ElapsingTimer.Start();
             StartQuestionTimer(DateTime.Now.AddSeconds(QUESTION_TIMEOUT));
@@ -154,6 +160,6 @@ namespace server.Handlers
                 (list[j], list[i]) = (list[i], list[j]);
             }
         }
-    
+
     }
 }
