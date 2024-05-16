@@ -250,3 +250,43 @@ p {
       right: 10vh;
     }
 }
+
+/* Quest CSS */
+:root{
+  --textFamily:'Franklin Gothic Medium',system-ui, sans-serif;
+}
+.contPgQst{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+ 
+}
+.contTtlQst{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px;
+  gap: 20px;
+  background: linear-gradient(45deg,green 90%, rgb(1, 83, 1)0%);
+  width: 320px;
+  border-radius: 0 0 100px 100px ;
+  font-family:var(--textFamily);
+  font-weight: bold;
+}
+.ttltxt{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+ 
+}
+.contQst{
+  width: 100%;
+  height: 100%;
+   display: flex;
+  padding: 100px;
+  align-items: center;
+  justify-content: center;
+  padding: 100px;
+
+}
