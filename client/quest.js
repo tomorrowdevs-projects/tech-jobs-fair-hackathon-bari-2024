@@ -1,22 +1,4 @@
 function qst() {
-
-
-const requestData = {
-  type: "multiple",
-  difficulty: "easy",
-  category: "Entertainment: Music",
-  questionText: "In 2006, which band released their debut album \"A Fever You Can't Sweat Out\"?",
-  correctAnswer: "Panic! At the Disco",
-  incorrectAnswers: [
-    "Twenty One Pilots",
-    "My Chemical Romance",
-    "Fall Out Boy"
-  ],
-  asked: true
-};
-
-  let rispostaData = {}
-
   const cont = document.createElement("div");
   const contTtlQst = document.createElement("div");
   const progressDiv = document.createElement("div");
@@ -35,14 +17,18 @@ const requestData = {
   ttltxt.classList.add("ttltxt");
   contQuestResponse.classList.add("form", "login", "boxQstRs");
 
-  progressBarDiv.style.width = "%";
-  h2.style.padding = 'var(--boxQst)';
+  progressBarDiv.style.width = "25%";
+  h2.style.padding = 'var(--boxQst)'
 
   progressDiv.setAttribute("role", "progressbar");
   progressDiv.setAttribute("aria-label", "Success example");
   progressDiv.setAttribute("aria-valuenow", "25");
   progressDiv.setAttribute("aria-valuemin", "0");
   progressDiv.setAttribute("aria-valuemax", "100");
+
+  h3.innerHTML = "Avatar 0/5";
+  h1.innerHTML = "Domanda 1";
+  h2.innerHTML = "Per cosa si utilizza Git?";
 
   document.body.append(cont);
   cont.append(contTtlQst);
@@ -55,11 +41,40 @@ const requestData = {
   contQst.append(h2);
   cont.append(contQuestResponse);
 
-    h3.innerHTML = localStorage.getItem("user") +" " + "0/5";
-    h1.innerHTML = requestData.category;
-    h2.innerHTML = requestData.questionText;
- 
- /*  fetch('/web/ws/questions', {
+  for (let i = 0; i < 4; i++) {
+    const contResp = document.createElement("div");
+    const inputResponse = document.createElement("input");
+
+    contResp.classList.add("form__filed");
+    inputResponse.classList.add("submit");
+
+    inputResponse.setAttribute("type", "submit");
+
+    inputResponse.value = "risposta $";
+
+    contResp.append(inputResponse);
+    contQuestResponse.append(contResp);
+}
+
+}
+
+qst()
+
+const requestData = {
+    type: "multiple",
+    difficulty: "easy",
+    category: "Entertainment: Music",
+    questionText: "In 2006, which band released their debut album \"A Fever You Can't Sweat Out\"?",
+    correctAnswer: "Panic! At the Disco",
+    incorrectAnswers: [
+      "Twenty One Pilots",
+      "My Chemical Romance",
+      "Fall Out Boy"
+    ],
+    asked: true
+  };
+  
+  fetch('http://localhost:5287/web/ws/questions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -69,40 +84,9 @@ const requestData = {
   .then(response => response.json())
   .then(data => {
     // Handle response data
-    console.log('Risposta dal server:', data);
-
-    h3.innerHTML = localStorage.getItem("user") + "0/5";
-    h1.innerHTML = data.category;
-    h2.innerHTML = data.questionText;
-
+      console.log('Risposta dal server:', data);
+      console.log('data.correctAnswer', data.correctAnswer);
   })
   .catch(error => {
     console.error('Si è verificato un errore durante la richiesta:', error);
-  }); */
-
-  for (let i = 0; i < 4; i++) {
-    const contResp = document.createElement("div");
-    const inputResponse = document.createElement("button");
-
-    contResp.classList.add("form__filed");
-    inputResponse.classList.add("box");
-
-    /* inputResponse.setAttribute("type", "submit"); */
-    let answers = requestData.incorrectAnswers[i];
-    inputResponse.innerText = answers;
-    
-
-    inputResponse.addEventListener('click', (e) => {
-      let selectedAnswer = e.target.innerText;
-      rispostaData = selectedAnswer;
-      console.log(rispostaData);
-    });
-
-    contResp.append(inputResponse);
-    contQuestResponse.append(contResp);
-}
-}
-qst()
-
-
-
+  });

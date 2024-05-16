@@ -1,37 +1,52 @@
+using System.Diagnostics;
 using Fleck;
 using Newtonsoft.Json;
 using server.Dtos;
+using server.Models;
 
 namespace server.Handlers
 {
     public class WebSocketHandler
     {
-        public static List<IWebSocketConnection> WsConnections { get; set; } = [];
+        private const int MAX_PLAYERS = 2;
+        private const int QUESTION_TIMEOUT = 15000; // 15 seconds
+        private const int NUM_QUESTIONS = 10;
 
-        public static void ProcessMessageReceived(WsRequest? request)
+        public static List<Player> Players = [];
+        public static QuestionList? QuestionRepo { get; set; }
+        public static Question? QuestionSelected { get; set; }
+        public static Timer QuestionTimer { get; set; } = new Timer(ExpiredTime);
+        public static Stopwatch ElapsingTimer { get; set; } = new();
+        public static Boolean GameInProgress { get; set; } = false;
+
+
+        public async Task Join(Player player)
         {
-            if (request == null) Send(new WsResponse() { Event = "NULL message received!", Status = "error" });
-            Console.WriteLine("Event:" + request?.Event + " - Status: " + request?.Status);
-            switch (request?.Event)
+            if (player == null) return;
+            if (GameInProgress || Players.Count >= MAX_PLAYERS)
             {
-                case "nuova_partita":
-                
-                    break;
-                case "END":
-                    // to do
-                    // saluti il giocatore e chiudi la connessione
-                    break;
+                await player?.WsConnection?.Send("Max number of player already joined!");
+                return;
             }
-
+            Players.Add(player);
+            await player?.WsConnection?.Send("Accepted to play!");
         }
 
-        public static void Send(WsResponse response)
+        public static void SendTpPlayer(Player player, WsResponse response)
         {
-            foreach (var webSocketConnection in WsConnections)
+            player.WsConnection?.Send(JsonConvert.SerializeObject(response));
+        }
+        public static void SendBroadcast(WsResponse response)
+        {
+            foreach (var player in Players)
             {
-                webSocketConnection.Send(JsonConvert.SerializeObject(response));
+                player.WsConnection?.Send(JsonConvert.SerializeObject(response));
             }
         }
 
+        private static void ExpiredTime(object? state)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

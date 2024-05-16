@@ -19,17 +19,7 @@ namespace server.Services
         private bool gameInProgress = false;
 
 
-        public async Task Join(Player player)
-        {
-            if (player == null) return;
-            if (gameInProgress || Players.Count >= MAX_PLAYERS)
-            {
-                await player?.WsConnection?.Send("Max number of player already joined!");
-                return;
-            }
-            Players.Add(player);
-            await player?.WsConnection?.Send("Accepted to play!");
-        }
+        
 
         public async Task StartGame()
         {

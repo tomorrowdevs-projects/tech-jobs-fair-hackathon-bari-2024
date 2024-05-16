@@ -9,7 +9,6 @@ WsServer.Start(ws =>
 {
     ws.OnOpen = () =>
     {
-        WebSocketHandler.WsConnections.Add(ws);
         Console.WriteLine("Connected client " + ws.ConnectionInfo.ClientIpAddress + ":" + ws.ConnectionInfo.ClientPort);
     };
     ws.OnMessage = message =>
@@ -17,8 +16,22 @@ WsServer.Start(ws =>
         try
         {
             Console.WriteLine("Received messsage: " + message.ToString());
-            WsRequest? msg = JsonConvert.DeserializeObject<WsRequest>(message);
-            WebSocketHandler.ProcessMessageReceived(msg);
+            WsRequest? request = JsonConvert.DeserializeObject<WsRequest>(message);
+            if (request == null) ws.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Unable to decode received message!", Status = "error" }));
+            switch (request?.Event)
+            {
+                case "nuova_partita":
+                    //Join();
+                    break;
+                case "END":
+                    // to do
+                    // saluti il giocatore e chiudi la connessione
+                    break;
+            }
+
+
+
+            //WebSocketHandler.ProcessMessageReceived(msg);
         }
         catch (Exception ex)
         {
@@ -28,7 +41,8 @@ WsServer.Start(ws =>
     };
     ws.OnClose = () =>
     {
-        WebSocketHandler.WsConnections.Remove(ws);
+
+        //ebSocketHandler.WsConnections.Remove(ws);
         Console.WriteLine("Client disconnected " + ws.ConnectionInfo.ClientIpAddress + ":" + ws.ConnectionInfo.ClientPort);
     };
     ws.OnError = error =>
@@ -53,10 +67,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseDeveloperExceptionPage();
 //}
-app.UseCors(options => options.AllowAnyOrigin()
-                            //.WithOrigins("http://localhost:4200/")
-                            .AllowAnyMethod()
-                            .AllowAnyHeader());
+app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
