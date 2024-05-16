@@ -15,6 +15,8 @@ const requestData = {
   asked: true
 };
 
+  let rispostaData = {}
+
   const cont = document.createElement("div");
   const contTtlQst = document.createElement("div");
   const progressDiv = document.createElement("div");
@@ -86,8 +88,15 @@ const requestData = {
     inputResponse.classList.add("box");
 
     /* inputResponse.setAttribute("type", "submit"); */
+    let answers = requestData.incorrectAnswers[i];
+    inputResponse.innerText = answers;
+    
 
-    inputResponse.innerText = requestData.incorrectAnswers[i];
+    inputResponse.addEventListener('click', (e) => {
+      let selectedAnswer = e.target.innerText;
+      rispostaData = selectedAnswer;
+      console.log(rispostaData);
+    });
 
     contResp.append(inputResponse);
     contQuestResponse.append(contResp);
