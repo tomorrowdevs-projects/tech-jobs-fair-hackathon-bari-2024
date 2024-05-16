@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Dtos;
 using server.Handlers;
+using server.Services;
 
 namespace server.Controllers
 {
@@ -20,13 +21,28 @@ namespace server.Controllers
         {
             try
             {
-                WsResponse msg = new()
-                {
-                    Message = response?.Message ?? DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff"),
-                    Content = "Welcome!"
-                };
-                WebSocketHandler.Send(msg);
+                WebSocketHandler.Send(response);
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+
+        [HttpPost("questions")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult> Questions(WsResponse response)
+        {
+            try
+            {
+                QuizServer quiz = new QuizServer();
+                await quiz.GetQuestions();
+                quiz.PickQuestion();
+                return Ok(quiz.CurrentQuestion);
             }
             catch (Exception ex)
             {

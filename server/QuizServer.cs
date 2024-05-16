@@ -13,25 +13,22 @@ namespace server.Services
 
         private List<Player> Players = [];
         private QuestionList? Questions = new();
-        private Question? CurrentQuestion;
-        private Timer questionTimer;
-        private Stopwatch ElapsingTimer;
+        public Question? CurrentQuestion;
+        private Timer questionTimer = new();
+        private Stopwatch ElapsingTimer = new();
         private bool gameInProgress = false;
 
-
-        public QuizServer()
-        { }
 
         public async Task Join(Player player)
         {
             if (player == null) return;
             if (gameInProgress || Players.Count >= MAX_PLAYERS)
             {
-                await player.WsConnection?.Send("Max number of player already joined!");
+                await player?.WsConnection?.Send("Max number of player already joined!");
                 return;
             }
             Players.Add(player);
-            await player.WsConnection?.Send("Accepted to play!");
+            await player?.WsConnection?.Send("Accepted to play!");
         }
 
         public async Task StartGame()
@@ -40,11 +37,11 @@ namespace server.Services
             Players.ForEach(p => p.Score = 0);
             Questions = await GetQuestions();
             Players.ForEach(p => p.WsConnection?.Send("Game is starting!"));
-            await PickQuestion();
-            await AskQuestion();
+            PickQuestion();
+            AskQuestion();
         }
 
-        private async Task<QuestionList?> GetQuestions()
+        public async Task<QuestionList?> GetQuestions()
         {
             using var client = new HttpClient();
             var response = await client.GetStringAsync("https://opentdb.com/api.php?amount=" + NUM_QUESTIONS + "&type=multiple");
@@ -52,14 +49,14 @@ namespace server.Services
             return Questions;
         }
 
-        private async Task<Question?> PickQuestion()
+        public Question? PickQuestion()
         {
             // Create a Random object
             Random random = new();
             // Randomly select one item
             int index = random.Next(Questions?.Questions?.Length ?? 0);
             Question selectedItem = Questions?.Questions[index];
-            while (selectedItem.Asked == true)
+            while (selectedItem?.Asked == true)
             {
                 index = random.Next(Questions?.Questions?.Length ?? 0);
                 selectedItem = Questions?.Questions[index];
@@ -68,23 +65,22 @@ namespace server.Services
             return selectedItem;
         }
 
-        public async Task AskQuestion()
+        public void AskQuestion()
         {
             // Scelgo la domanda
-            CurrentQuestion = await PickQuestion();
-            Players.ForEach(p => p.WsConnection?.Send(CurrentQuestion.QuestionText));
-            List<string> answers = new List<string> { CurrentQuestion?.CorrectAnswer ?? "" };
-            answers.AddRange(CurrentQuestion?.IncorrectAnswers);
+            CurrentQuestion = PickQuestion();
+            Players.ForEach(p => p.WsConnection?.Send(CurrentQuestion?.QuestionText));
+            List<string> answers = [CurrentQuestion?.CorrectAnswer ?? "", .. CurrentQuestion?.IncorrectAnswers];
             Shuffle(answers);
             Players.ForEach(p => p.WsConnection?.Send(JsonConvert.SerializeObject(answers)));
             questionTimer = new Timer(QUESTION_TIMEOUT);
-            questionTimer.Elapsed += async (sender, e) => await EndQuestion();
+            questionTimer.Elapsed += (sender, e) => EndQuestion();
             questionTimer.AutoReset = false;
             questionTimer.Start();
             ElapsingTimer.Start();
         }
 
-        public async Task Answer(String playername, String answer)
+        public void Answer(String playername, String answer)
         {
             var player = Players.FirstOrDefault(p => p.Name == playername);
             if (player != null && !string.IsNullOrEmpty(answer) && CurrentQuestion != null)
@@ -95,8 +91,8 @@ namespace server.Services
                 player.Score += (answer == CurrentQuestion.CorrectAnswer) ? 1 : 0;
             }
             Thread.Sleep(3000);
-            await PickQuestion();
-            await AskQuestion();
+            PickQuestion();
+            AskQuestion();
         }
 
         public void PlayerDisconnected(Fleck.IWebSocketConnection connection)
@@ -105,8 +101,7 @@ namespace server.Services
             gameInProgress = false;
         }
 
-
-        private async Task EndQuestion()
+        private void EndQuestion()
         {
             questionTimer.Stop();
             ElapsingTimer.Stop();
@@ -114,20 +109,20 @@ namespace server.Services
             if (Players.Count >= 2)
             {
                 Thread.Sleep(3000);
-                await PickQuestion();
-                await AskQuestion();
+                PickQuestion();
+                AskQuestion();
             }
             else
             {
-                await EndGame();
+                EndGame();
             }
         }
 
-        private async Task EndGame()
+        private void EndGame()
         {
             gameInProgress = false;
             var finalResults = Players.OrderByDescending(p => p.Score).ToList();
-            Players.ForEach(async p => await p.WsConnection?.Send(JsonConvert.SerializeObject(finalResults)));
+            Players.ForEach(async p => await p?.WsConnection?.Send(JsonConvert.SerializeObject(finalResults)));
         }
 
 

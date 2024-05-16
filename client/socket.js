@@ -2,14 +2,14 @@ const SOCKET_URL = "ws://lignux.net:1402";
 const DEBUG_SOCKET = "ws://lignux.net:3000";
 const LOCAL_DEBUG_SOCKET = "ws://localhost:3000";
 
-const socket = new WebSocket(LOCAL_DEBUG_SOCKET);
+const socket = new WebSocket(SOCKET_URL);
 
 function connection() {
   console.log("open");
 }
 
 function connectionError() {
-  console.error(error);
+  console.log("connection error");
 }
 const credenzial = {};
 function message(msg) {
@@ -38,8 +38,9 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     let value = document.getElementById("login__username").value;
     if (value == "") return
-   
-    socket.send(JSON.stringify({ event: "nuova_partita", user: value }));
+      let json = JSON.stringify({ event: "nuova_partita", user: value });
+      console.log(json);
+    socket.send(json);
   });
 
   socket.onopen = connection;

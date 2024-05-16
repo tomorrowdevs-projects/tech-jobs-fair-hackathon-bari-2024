@@ -10,12 +10,12 @@ namespace server.Handlers
 
         public static void ProcessMessageReceived(WsRequest? request)
         {
-            if (request == null) Send(new WsResponse() { Message = "NULL message received!" });
-
-            Console.WriteLine(request?.Message);
-            switch (request?.Message)
+            if (request == null) Send(new WsResponse() { Event = "NULL message received!", Status = "error" });
+            Console.WriteLine("Event:" + request?.Event + " - Status: " + request?.Status);
+            switch (request?.Event)
             {
-                case "START":
+                case "nuova_partita":
+                
                     break;
                 case "END":
                     // to do
