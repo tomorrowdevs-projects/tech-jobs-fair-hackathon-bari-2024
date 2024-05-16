@@ -2,6 +2,7 @@ using Fleck;
 using Newtonsoft.Json;
 using server.Dtos;
 using server.Handlers;
+using server.Models;
 
 // Inizializzo un websocket
 var WsServer = new WebSocketServer("ws://0.0.0.0:1402");
@@ -21,28 +22,30 @@ WsServer.Start(ws =>
             switch (request?.Event)
             {
                 case "nuova_partita":
-                    //Join();
+                    WebSocketHandler.JoinQueue(new Player
+                    {
+                        Name = request?.User ?? "Player " + WebSocketHandler.Players.Count,
+                        WsConnection = ws
+                    });
                     break;
                 case "END":
                     // to do
                     // saluti il giocatore e chiudi la connessione
                     break;
+                default:
+                    ws.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Unknown command received", Status = "error" }));
+                    break;
             }
-
-
-
-            //WebSocketHandler.ProcessMessageReceived(msg);
         }
         catch (Exception ex)
         {
-            // inviare al client: non sono riuscito a decodificare il messaggio
+            ws.Send(JsonConvert.SerializeObject(new WsResponse() { Event = "Error parsing message", Status = "error" }));
             Console.WriteLine(ex.Message);
         }
     };
     ws.OnClose = () =>
     {
-
-        //ebSocketHandler.WsConnections.Remove(ws);
+        //WebSocketHandler.WsConnections.Remove(ws);
         Console.WriteLine("Client disconnected " + ws.ConnectionInfo.ClientIpAddress + ":" + ws.ConnectionInfo.ClientPort);
     };
     ws.OnError = error =>

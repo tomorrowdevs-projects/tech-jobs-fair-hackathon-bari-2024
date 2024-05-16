@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Dtos;
 using server.Handlers;
-using server.Services;
 
 namespace server.Controllers
 {
@@ -35,14 +34,12 @@ namespace server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult> Questions()
+        public ActionResult Questions()
         {
             try
             {
-                QuizServer quiz = new();
-                await quiz.GetQuestions();
-                quiz.PickQuestion();
-                return Ok(quiz.CurrentQuestion);
+                WebSocketHandler.PickQuestion();
+                return Ok(WebSocketHandler.QuestionSelected);
             }
             catch (Exception ex)
             {

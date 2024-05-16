@@ -5,7 +5,7 @@ namespace server.Models
     public class QuestionList
     {
         [JsonProperty(PropertyName ="response_code")] public int ResponseCode { get; set; }
-        [JsonProperty(PropertyName = "results")] public Question[] Questions { get; set; } = [];
+        [JsonProperty(PropertyName = "results")] public List<Question> Questions { get; set; } = [];
     }
 
     public class Question
@@ -16,7 +16,6 @@ namespace server.Models
         [JsonProperty(PropertyName ="question")] public String QuestionText { get; set; } = String.Empty;
         [JsonProperty(PropertyName ="correct_answer")] public String CorrectAnswer { get; set; } = String.Empty;
         [JsonProperty(PropertyName = "incorrect_answers")] public String[] IncorrectAnswers { get; set; } = [];
-        public Boolean Asked { get; set; } = false;
     }
 }
 
