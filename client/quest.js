@@ -59,3 +59,34 @@ function qst() {
 }
 
 qst()
+
+const requestData = {
+    type: "multiple",
+    difficulty: "easy",
+    category: "Entertainment: Music",
+    questionText: "In 2006, which band released their debut album \"A Fever You Can't Sweat Out\"?",
+    correctAnswer: "Panic! At the Disco",
+    incorrectAnswers: [
+      "Twenty One Pilots",
+      "My Chemical Romance",
+      "Fall Out Boy"
+    ],
+    asked: true
+  };
+  
+  fetch('http://localhost:5287/web/ws/questions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(requestData)
+  })
+  .then(response => response.json())
+  .then(data => {
+    // Handle response data
+      console.log('Risposta dal server:', data);
+      console.log('data.correctAnswer', data.correctAnswer);
+  })
+  .catch(error => {
+    console.error('Si è verificato un errore durante la richiesta:', error);
+  });

@@ -21,7 +21,7 @@ namespace server.Controllers
         {
             try
             {
-                WebSocketHandler.Send(response);
+                WebSocketHandler.SendBroadcast(response);
                 return Ok();
             }
             catch (Exception ex)
@@ -35,11 +35,11 @@ namespace server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult> Questions(WsResponse response)
+        public async Task<ActionResult> Questions()
         {
             try
             {
-                QuizServer quiz = new QuizServer();
+                QuizServer quiz = new();
                 await quiz.GetQuestions();
                 quiz.PickQuestion();
                 return Ok(quiz.CurrentQuestion);
