@@ -290,7 +290,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
- 
+  color: var(--loginSubmitColor);
 }
 .contQst{
   width: 100%;
@@ -300,5 +300,25 @@ p {
   align-items: center;
   justify-content: center;
   padding: 100px;
+}
 
+.box{
+  background-color: var(--loginSubmitBackgroundColor);
+  color: var(--loginSubmitColor);
+  font-weight: 700;
+  text-transform: uppercase;
+  box-shadow: var(--boxShadown);
+  border-radius: var(--loginBorderRadus);
+  padding: 1rem;
+  inline-size: 100%;
+  margin: 0;
+  -webkit-appearance: button;
+  border: 0;
+  margin: 0;
+  outline: 0;
+  transition: background-color 0.3s;
+}
+.box:not(:disabled){
+  cursor: pointer;
+ 
 }
