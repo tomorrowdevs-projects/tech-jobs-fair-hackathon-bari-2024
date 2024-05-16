@@ -1,4 +1,4 @@
-export function qst() {
+function qst() {
   const cont = document.createElement("div");
   const contTtlQst = document.createElement("div");
   const progressDiv = document.createElement("div");
@@ -15,9 +15,10 @@ export function qst() {
   progressDiv.classList.add("progress");
   progressBarDiv.classList.add("progress-bar", "bg-success");
   ttltxt.classList.add("ttltxt");
-  contQuestResponse.classList.add("form", "login");
+  contQuestResponse.classList.add("form", "login", "boxQstRs");
 
   progressBarDiv.style.width = "25%";
+  h2.style.padding = 'var(--boxQst)'
 
   progressDiv.setAttribute("role", "progressbar");
   progressDiv.setAttribute("aria-label", "Success example");
@@ -25,8 +26,8 @@ export function qst() {
   progressDiv.setAttribute("aria-valuemin", "0");
   progressDiv.setAttribute("aria-valuemax", "100");
 
-  h3.innerHTML = "Turno 1";
-  h1.innerHTML = "Domanda";
+  h3.innerHTML = "Avatar 0/5";
+  h1.innerHTML = "Domanda 1";
   h2.innerHTML = "Per cosa si utilizza Git?";
 
   document.body.append(cont);
@@ -49,9 +50,12 @@ export function qst() {
 
     inputResponse.setAttribute("type", "submit");
 
-    inputResponse.value = "quest";
+    inputResponse.value = "risposta $";
 
     contResp.append(inputResponse);
     contQuestResponse.append(contResp);
-  }
 }
+
+}
+
+qst()

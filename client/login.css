@@ -26,6 +26,12 @@
   display: flex;
 }
 
+.boxQstRs{
+  grid-template-columns: repeat(2,auto);
+  padding: 50px;
+  gap: 50px !important;
+}
+
 .isOnline {
   display: flex !important;
   justify-content: flex-end !important;
@@ -92,6 +98,9 @@
   --bodyFontSize: 0.875rem;
   --bodyFontWeight: 400;
   --bodyLineHeight: 1.5;
+
+  --boxQst:50px;
+  --boxShadown:2px 2px 2px #00000150;
 }
 
 * {
@@ -161,6 +170,7 @@ input[type="submit"] {
 .form input[type="text"],
 .form input[type="submit"] {
   inline-size: 100%;
+  
 }
 
 .form__field {
@@ -182,14 +192,15 @@ input[type="submit"] {
 
   --loginLabelBackgroundColor: #363b41;
 
-  --loginSubmitBackgroundColor: #ea4c88;
+  --loginSubmitBackgroundColor: #052c65;
   --loginSubmitColor: #eee;
-  --loginSubmitHoverBackgroundColor: #d44179;
+  --loginSubmitHoverBackgroundColor: #021228;
 }
 
 .login {
   color: var(--loginColor);
 }
+
 
 .login label,
 .login input[type="text"],
@@ -225,6 +236,7 @@ input[type="submit"] {
   color: var(--loginSubmitColor);
   font-weight: 700;
   text-transform: uppercase;
+  box-shadow: var(--boxShadown);
 }
 
 .login input[type="submit"]:focus,
@@ -268,7 +280,7 @@ p {
   justify-content: center;
   padding: 50px;
   gap: 20px;
-  background: linear-gradient(45deg,green 90%, rgb(1, 83, 1)0%);
+  background: linear-gradient(45deg,#052c65 90%,#021228 0%);
   width: 320px;
   border-radius: 0 0 100px 100px ;
   font-family:var(--textFamily);

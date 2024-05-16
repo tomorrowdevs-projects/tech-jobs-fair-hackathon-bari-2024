@@ -9,7 +9,7 @@ function connection() {
 }
 
 function connectionError() {
-  console.log("error");
+  console.error(error);
 }
 const credenzial = {};
 function message(msg) {
@@ -17,10 +17,6 @@ function message(msg) {
   switch (parsed.event) {
     case "nuova_partita":
       if (parsed.status == "success") {
-        document.getElementById("searching").style.display = "none";
-        let start = document.createElement("h1");
-
-        start.innerHTML = "comincia il quiz";
         credenzial.id = parsed.id;
         credenzial.gameId = parsed.gameId;
         socket.send(
@@ -41,8 +37,8 @@ window.addEventListener("DOMContentLoaded", () => {
   document.querySelector("#submit").addEventListener("click", (e) => {
     e.preventDefault();
     let value = document.getElementById("login__username").value;
-    if (value == "") return;
-
+    if (value == "") return
+   
     socket.send(JSON.stringify({ event: "nuova_partita", user: value }));
   });
 
@@ -52,3 +48,6 @@ window.addEventListener("DOMContentLoaded", () => {
   // socket.onclose = onClose;
   socket.onmessage = message;
 });
+
+
+
