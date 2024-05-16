@@ -53,6 +53,10 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseDeveloperExceptionPage();
 //}
+app.UseCors(options => options.AllowAnyOrigin()
+                            //.WithOrigins("http://localhost:4200/")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

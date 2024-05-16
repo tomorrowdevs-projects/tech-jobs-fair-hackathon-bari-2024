@@ -45,7 +45,7 @@ namespace server.Services
         {
             using var client = new HttpClient();
             var response = await client.GetStringAsync("https://opentdb.com/api.php?amount=" + NUM_QUESTIONS + "&type=multiple");
-            var Questions = JsonConvert.DeserializeObject<QuestionList>(response);
+            Questions = JsonConvert.DeserializeObject<QuestionList>(response);
             return Questions;
         }
 
@@ -54,15 +54,15 @@ namespace server.Services
             // Create a Random object
             Random random = new();
             // Randomly select one item
-            int index = random.Next(Questions?.Questions?.Length ?? 0);
-            Question selectedItem = Questions?.Questions[index];
-            while (selectedItem?.Asked == true)
+            int index = random.Next((Questions?.Questions?.Length - 1) ?? 0);
+            CurrentQuestion = Questions?.Questions[index];
+            while (CurrentQuestion?.Asked == true)
             {
                 index = random.Next(Questions?.Questions?.Length ?? 0);
-                selectedItem = Questions?.Questions[index];
+                CurrentQuestion = Questions?.Questions[index];
             }
             Questions.Questions[index].Asked = true;
-            return selectedItem;
+            return CurrentQuestion;
         }
 
         public void AskQuestion()
