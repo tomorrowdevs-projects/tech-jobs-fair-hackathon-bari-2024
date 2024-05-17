@@ -497,19 +497,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/michele/.nuget/packages/": {}
+    "C:\\Users\\Torepà\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/michele/Works/02_TJF_Challenge/server/server.csproj",
+      "projectUniqueName": "C:\\Users\\Torepà\\Documents\\GitHub\\tech-jobs-fair-hackathon-bari-2024-team1\\server\\server.csproj",
       "projectName": "server",
-      "projectPath": "/Users/michele/Works/02_TJF_Challenge/server/server.csproj",
-      "packagesPath": "/Users/michele/.nuget/packages/",
-      "outputPath": "/Users/michele/Works/02_TJF_Challenge/server/obj/",
+      "projectPath": "C:\\Users\\Torepà\\Documents\\GitHub\\tech-jobs-fair-hackathon-bari-2024-team1\\server\\server.csproj",
+      "packagesPath": "C:\\Users\\Torepà\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Torepà\\Documents\\GitHub\\tech-jobs-fair-hackathon-bari-2024-team1\\server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/michele/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Torepà\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -570,7 +570,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
