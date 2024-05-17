@@ -1,6 +1,6 @@
 const SOCKET_URL = "ws://lignux.net:1402";
 const DEBUG_SOCKET = "ws://lignux.net:3000";
-const LOCAL_DEBUG_SOCKET = "ws://localhost:3000";
+const LOCAL_DEBUG_SOCKET = "ws://localhost:5500";
 
 const socket = new WebSocket(LOCAL_DEBUG_SOCKET);
 
@@ -26,9 +26,14 @@ window.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     let value = document.getElementById("login__username").value;
     if (value === "") return;
-    let json = JSON.stringify({ event: "nuova_partita", user: value });
-    console.log(json);
-    socket.send(json);
+    if(socket.readyState === WebSocket.OPEN){
+      let json = JSON.stringify({ event: "nuova_partita", user: value });
+      console.log(json);
+      socket.send(json);
+    } else {
+       console.error('La connessione del socket non è aperta.');
+    }
+   
   });
 });
 
